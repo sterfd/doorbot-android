@@ -5,41 +5,9 @@ import { useState, useEffect } from 'react';
 
 export default function App() {
   const [bannerText, setBannerText] = useState('');
-  const [token, setToken] = useState('');
-  // const token = '';
+//   const [token, setToken] = useState('');
+  const token = '';
   
-  // useEffect(() => {
-  //   const fetchToken = async () => {
-  //     try {
-  //       const storedToken = await AsyncStorage.getItem('token');
-  //       if (storedToken !== null) {
-  //         setToken(storedToken);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching token:', error);
-  //     }
-  //   };
-
-  //   fetchToken();
-  // }, []);
-
-  // const storeToken = async (newToken) => {
-  //   try {
-  //     await AsyncStorage.setItem('token', newToken);
-  //     setToken(newToken);
-  //   } catch (error) {
-  //     console.error('Error storing token:', error);
-  //   }
-  // };
-
-  // const removeToken = async () => {
-  //   try {
-  //     await AsyncStorage.removeItem('token');
-  //     setToken(null);
-  //   } catch (error) {
-  //     console.error('Error removing token:', error);
-  //   }
-  // };
 
   const onPressDoorbotBuzz = () => {
     setBannerText('Buzz button pressed');
@@ -55,16 +23,9 @@ export default function App() {
     sendPostRequest('unlock_mobile')
   }
   
-  const onPressOpenSettings = async () => {
+  const onPressOpenSettings = () => {
     setBannerText('Changing settings');
-    try {
-      console.log('pressed settings')
-   } catch (error) {
-      console.error('Error sending post request:', error);
-   }
-  }
-  const onPressBleh = () => {
-    console.log('pressed bleh');
+    console.log('changing settings')
   }
 
   const sendPostRequest = async (action) => {
@@ -95,21 +56,16 @@ export default function App() {
       </View>
       <Text>Open up App.js to start working on your app!</Text>
       <View style={styles.buttonContainer}>
-        {/* <TouchableOpacity style={styles.button}  onPress={() => onPressDoorbotBuzz()}>
-          <Text style={styles.buttonText}>BUZZ</Text>
-        </TouchableOpacity> */}
         <Button title="BUZZ" color='#ff6262' onPress={() => onPressDoorbotBuzz()}/>
-        {/* <Button title="ELEVATOR" color='#08acd5' onPress={() => onPressDoorbotElevator()}/> */}
-        <Button title="CHECK STATUS" color='#eeac9c'/>
+        <Button title="ELEVATOR" color='#08acd5' onPress={() => onPressDoorbotElevator()}/>
+        <Button title="CHECK STATUS" color='#eeac9c' onPress={() => onPressDoorbotStatus()}/>
       </View>
       <View style={styles.settingsButtonContainer}>
         <Button title="Settings" color='#7b2941' onPress={() => onPressOpenSettings()}/>
-        <Button title="Bleh" color='#7b2941' onPress={() => onPressBleh()}/>
       </View>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -118,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: StatusBar.currentHeight,
+    // paddingTop: StatusBar.currentHeight,
   },
   banner: {
     backgroundColor: '#8bd5ee',
@@ -134,30 +90,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  button: {
-    borderRadius: 10,
-    width: 200,
-    height: 100,
-    paddingTop: 20,
-    backgroundColor:'#ff6262',
-    margin: 20,
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
   buttonContainer: {
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
     marginTop: 20,
   },
-  // settingsButtonContainer: {
-  //   position: 'absolute',
-  //   right: 20,
-  //   bottom: 20,
-  // },
+  settingsButtonContainer: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+  },
 });
 

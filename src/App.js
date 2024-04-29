@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { openBrowserAsync } from "expo-web-browser";
 import { SettingsMenu } from "./settingsMenu";
 
 export default function App() {

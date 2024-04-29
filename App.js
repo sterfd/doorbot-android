@@ -54,12 +54,6 @@ export default function App() {
     console.log("status pressed");
   };
 
-  const onPressSettings = () => {
-    setIsBannerOpen(true);
-    setBannerText("Settings button pressed");
-    console.log("settings pressed");
-  };
-
   const onPressMenu = () => {
     console.log("menu pressed");
     toggleSettings();
@@ -115,7 +109,6 @@ export default function App() {
       </Modal>
 
       <View style={styles.settings}>
-        <Button title="SETTINGS" onPress={onPressSettings} />
         <Button title="OPEN MENU" onPress={onPressMenu} />
       </View>
     </View>

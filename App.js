@@ -58,12 +58,9 @@ export default function App() {
     setIsBannerOpen(true);
     setBannerText("Settings button pressed");
     console.log("settings pressed");
-    openBrowserAsync("https://www.recurse.com/settings/apps");
   };
 
   const onPressMenu = () => {
-    setIsBannerOpen(true);
-    setBannerText("Menu button pressed");
     console.log("menu pressed");
     toggleSettings();
   };

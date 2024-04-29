@@ -1,11 +1,32 @@
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { openBrowserAsync } from "expo-web-browser";
 import * as Clipboard from "expo-clipboard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
   const [text, setText] = useState("");
+
+  const onPressGetStorage = async () => {
+    try {
+      const value = await AsyncStorage.getItem("token");
+      if (value !== null) {
+        console.log(value);
+        setText(value);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onPressSaveStorage = async (value) => {
+    try {
+      await AsyncStorage.setItem("token", "asdfzxcvqwer");
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const onPressSave = () => {
     setToken(text);
@@ -32,6 +53,11 @@ export function SettingsMenu({ toggleSettings }) {
           onChangeText={setText}
           placeholder="None"
         />
+        <Button title="GET ASYNC STORAGE" onPress={onPressGetStorage}></Button>
+        <Button
+          title="SAVE ASYNC STORAGE"
+          onPress={onPressSaveStorage}
+        ></Button>
         {/* <>
           {token ? (
             <Button title="DELETE TOKEN" onPress={onPressSave}></Button>

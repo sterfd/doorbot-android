@@ -11,12 +11,14 @@ import {
 import { useState, useEffect } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import { openBrowserAsync } from "expo-web-browser";
+import { InfoMenu } from "./infoMenu";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
   const [text, setText] = useState("");
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   useEffect(() => {
     loadToken();
@@ -59,12 +61,11 @@ export function SettingsMenu({ toggleSettings }) {
     setText(text);
   };
 
-  const onPressGetToken = () => {
-    openBrowserAsync("https://www.recurse.com/settings/apps");
-  };
-
   const handleAdd = () => {
     console.log("add pressed");
+    openBrowserAsync("https://www.recurse.com/settings/apps");
+    // have paste token button -> should display wahts pasted
+    // save token button
   };
 
   const handleInfo = () => {
@@ -72,7 +73,21 @@ export function SettingsMenu({ toggleSettings }) {
   };
 
   const handleExtra = (option) => {
-    console.log("Option selected: ", option);
+    if (option === "Delete Token") {
+      deleteToken();
+    } else {
+      // reveal token logic
+      console.log("reavel token");
+    }
+  };
+
+  const onPressInfo = () => {
+    console.log("info pressed");
+    toggleInfo();
+  };
+
+  const toggleInfo = () => {
+    setIsInfoOpen(!isInfoOpen);
   };
 
   return (
@@ -149,7 +164,7 @@ export function SettingsMenu({ toggleSettings }) {
               <View style={styles.rightView}>
                 <TouchableOpacity
                   style={styles.rightButton}
-                  onPress={handleInfo}
+                  onPress={onPressInfo}
                 >
                   <Image
                     source={require("./info.png")}
@@ -161,17 +176,24 @@ export function SettingsMenu({ toggleSettings }) {
           </TouchableOpacity>
         )}
 
-        <Button title="DELETE" onPress={deleteToken}></Button>
         <Button title="GET ASYNC STORAGE" onPress={loadToken}></Button>
         <Button
           title="SAVE ASYNC STORAGE"
           onPress={onPressSaveStorage}
         ></Button>
       </View>
-      <Button title="GET A TOKEN" onPress={onPressGetToken}></Button>
       <View style={styles.closeButton}>
         <Button title="CLOSE SETTINGS" onPress={toggleSettings}></Button>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isInfoOpen}
+        onRequestClose={toggleInfo}
+      >
+        <InfoMenu toggleInfo={toggleInfo} />
+      </Modal>
     </View>
   );
 }

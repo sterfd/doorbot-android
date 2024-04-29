@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Modal,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { openBrowserAsync } from "expo-web-browser";
@@ -15,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
   const [text, setText] = useState("");
+  const [extraVisible, setExtraVisible] = useState(false);
 
   useEffect(() => {
     loadToken();
@@ -69,8 +71,9 @@ export function SettingsMenu({ toggleSettings }) {
     console.log("info pressed");
   };
 
-  const handleExtra = () => {
-    console.log("extra pressed");
+  const handleExtra = (option) => {
+    console.log("Option selected: ", option);
+    setExtraVisible(false);
   };
 
   return (
@@ -79,24 +82,47 @@ export function SettingsMenu({ toggleSettings }) {
         <Text style={styles.pat}>Personal Access Token:</Text>
         {token ? (
           // we have a token - have the ... for Reveal Token, and Delete Token
-          <View style={styles.addButton}>
-            <View style={styles.buttonContent}>
-              <View style={styles.leftView}>
-                {/* replace this with stars */}
-                <Text style={styles.tokenText}>{token} ******</Text>
-              </View>
-              <View style={styles.rightView}>
-                <TouchableOpacity
-                  style={styles.rightButton}
-                  onPress={handleExtra}
-                >
-                  <Image
-                    source={require("./ellipsis.png")}
-                    style={styles.icon}
-                  ></Image>
-                </TouchableOpacity>
+          <View>
+            <View style={styles.addButton}>
+              <View style={styles.buttonContent}>
+                <View style={styles.leftView}>
+                  {/* replace this with stars */}
+                  <Text style={styles.tokenText}>{token} ******</Text>
+                </View>
+                <View style={styles.rightView}>
+                  <TouchableOpacity
+                    style={styles.rightButton}
+                    onPress={() => setExtraVisible(true)}
+                  >
+                    <Image
+                      source={require("./ellipsis.png")}
+                      style={styles.icon}
+                    ></Image>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={extraVisible}
+              onRequestClose={() => setExtraVisible(false)}
+            >
+              <View style={styles.extraModal}>
+                <TouchableOpacity
+                  onPress={() => handleExtra("reveal")}
+                  style={styles.extraOption}
+                >
+                  <Text>Reveal Token</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleExtra("delete")}
+                  style={styles.extraOption}
+                >
+                  <Text>Delete Token</Text>
+                </TouchableOpacity>
+              </View>
+            </Modal>
           </View>
         ) : (
           // </TouchableOpacity>
@@ -104,7 +130,7 @@ export function SettingsMenu({ toggleSettings }) {
           // open a text input with paste and save buttons
           <TouchableOpacity
             style={{ ...styles.addButton, backgroundColor: "#ff7394" }}
-            onPress={handleExtra}
+            onPress={handleAdd}
           >
             <View style={styles.buttonContent}>
               <View style={styles.leftView}>
@@ -218,5 +244,22 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     marginHorizontal: 20,
+  },
+  extraModal: {
+    marginTop: "auto",
+    backgroundColor: "white",
+    borderTopWidth: 1,
+    borderTopColor: "lightgray",
+  },
+  extraOption: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
+  },
+
+  closeButton: {
+    position: "absolute",
+    right: 25,
+    bottom: 25,
   },
 });

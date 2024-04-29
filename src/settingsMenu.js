@@ -17,7 +17,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
   const [text, setText] = useState("");
-  const [extraVisible, setExtraVisible] = useState(false);
 
   useEffect(() => {
     loadToken();
@@ -74,7 +73,6 @@ export function SettingsMenu({ toggleSettings }) {
 
   const handleExtra = (option) => {
     console.log("Option selected: ", option);
-    setExtraVisible(false);
   };
 
   return (
@@ -86,12 +84,12 @@ export function SettingsMenu({ toggleSettings }) {
           <View>
             <View style={styles.addButton}>
               <View style={styles.buttonContent}>
-                <View style={styles.leftView}>
+                <View style={styles.rightView}>
                   {/* replace this with stars */}
                   <Text style={styles.tokenText}>{token} ******</Text>
                 </View>
                 <View style={styles.rightView}>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.rightButton}
                     onPress={() => setExtraVisible(true)}
                   >
@@ -99,39 +97,38 @@ export function SettingsMenu({ toggleSettings }) {
                       source={require("./ellipsis.png")}
                       style={styles.icon}
                     ></Image>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+
+                  <SelectDropdown
+                    data={["Reveal Token", "Delete Token"]}
+                    onSelect={(selectedItem) => {
+                      handleExtra(selectedItem);
+                    }}
+                    renderButton={() => {
+                      return (
+                        <View style={styles.rightButton}>
+                          <Image
+                            source={require("./ellipsis.png")}
+                            style={styles.icon}
+                          ></Image>
+                        </View>
+                      );
+                    }}
+                    renderItem={(item) => {
+                      return (
+                        <View style={styles.dropdownItemStyle}>
+                          <Text style={styles.dropdownItemTxtStyle}>
+                            {item}
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    showsVerticalScrollIndicator={false}
+                    dropdownStyle={styles.dropdownMenuStyle}
+                  />
                 </View>
               </View>
             </View>
-            <SelectDropdown
-              data={["Reveal Token", "Delete Token"]}
-              onSelect={(selectedItem) => {
-                console.log(selectedItem);
-              }}
-              renderButton={() => {
-                return (
-                  <View style={styles.dropdownButtonStyle}>
-                    <Image
-                      source={require("./ellipsis.png")}
-                      style={styles.icon}
-                    ></Image>
-                  </View>
-                );
-              }}
-              renderItem={(item) => {
-                return (
-                  <View
-                    style={{
-                      ...styles.dropdownItemStyle,
-                    }}
-                  >
-                    <Text style={styles.dropdownItemTxtStyle}>{item}</Text>
-                  </View>
-                );
-              }}
-              showsVerticalScrollIndicator={false}
-              dropdownStyle={styles.dropdownMenuStyle}
-            />
           </View>
         ) : (
           // no token - have the + Add token and the i for more info and screenshots/text explanation
@@ -141,7 +138,7 @@ export function SettingsMenu({ toggleSettings }) {
             onPress={handleAdd}
           >
             <View style={styles.buttonContent}>
-              <View style={styles.leftView}>
+              <View style={styles.rightView}>
                 <Image
                   source={require("./add.png")}
                   style={styles.icon}
@@ -201,11 +198,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 10,
     marginVertical: 10,
+    // position: "relative",
   },
   buttonContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    // position: "relative",
   },
   leftView: {
     flexDirection: "row",
@@ -225,12 +224,14 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     marginHorizontal: 10,
+    alignSelf: "center",
   },
   rightButton: {
-    height: 30,
-    width: 30,
-    // backgroundColor: "pink",
+    height: 35,
+    width: 35,
+    backgroundColor: "pink",
     marginHorizontal: 20,
+    justifyContent: "center",
   },
   extraModal: {
     marginTop: "auto",
@@ -243,27 +244,26 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "lightgray",
   },
-
   closeButton: {
     position: "absolute",
     right: 25,
     bottom: 25,
   },
 
-  dropdownButtonIconStyle: {
-    fontSize: 28,
-    marginRight: 8,
-  },
   dropdownMenuStyle: {
     backgroundColor: "#E9ECEF",
     borderRadius: 8,
+    width: 200,
   },
   dropdownItemStyle: {
-    width: "100%",
-    flexDirection: "row",
+    width: 150,
+    // position: "absolute",
+    // right: 100,
+    // bottom: 100,
+    // flexDirection: "row",
     paddingHorizontal: 12,
-    justifyContent: "center",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
     paddingVertical: 8,
   },
   dropdownItemTxtStyle: {

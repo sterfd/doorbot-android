@@ -9,6 +9,7 @@ import {
   Modal,
 } from "react-native";
 import { useState, useEffect } from "react";
+import SelectDropdown from "react-native-select-dropdown";
 import { openBrowserAsync } from "expo-web-browser";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -102,30 +103,37 @@ export function SettingsMenu({ toggleSettings }) {
                 </View>
               </View>
             </View>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={extraVisible}
-              onRequestClose={() => setExtraVisible(false)}
-            >
-              <View style={styles.extraModal}>
-                <TouchableOpacity
-                  onPress={() => handleExtra("reveal")}
-                  style={styles.extraOption}
-                >
-                  <Text>Reveal Token</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleExtra("delete")}
-                  style={styles.extraOption}
-                >
-                  <Text>Delete Token</Text>
-                </TouchableOpacity>
-              </View>
-            </Modal>
+            <SelectDropdown
+              data={["Reveal Token", "Delete Token"]}
+              onSelect={(selectedItem) => {
+                console.log(selectedItem);
+              }}
+              renderButton={() => {
+                return (
+                  <View style={styles.dropdownButtonStyle}>
+                    <Image
+                      source={require("./ellipsis.png")}
+                      style={styles.icon}
+                    ></Image>
+                  </View>
+                );
+              }}
+              renderItem={(item) => {
+                return (
+                  <View
+                    style={{
+                      ...styles.dropdownItemStyle,
+                    }}
+                  >
+                    <Text style={styles.dropdownItemTxtStyle}>{item}</Text>
+                  </View>
+                );
+              }}
+              showsVerticalScrollIndicator={false}
+              dropdownStyle={styles.dropdownMenuStyle}
+            />
           </View>
         ) : (
-          // </TouchableOpacity>
           // no token - have the + Add token and the i for more info and screenshots/text explanation
           // open a text input with paste and save buttons
           <TouchableOpacity
@@ -156,36 +164,13 @@ export function SettingsMenu({ toggleSettings }) {
           </TouchableOpacity>
         )}
 
-        {/* <TextInput
-          style={styles.pat}
-          value={text}
-          multiline
-          numberOfLines={3}
-          onChangeText={setText}
-          placeholder="None"
-        /> */}
         <Button title="DELETE" onPress={deleteToken}></Button>
         <Button title="GET ASYNC STORAGE" onPress={loadToken}></Button>
         <Button
           title="SAVE ASYNC STORAGE"
           onPress={onPressSaveStorage}
         ></Button>
-        {/* <>
-          {token ? (
-            <Button title="DELETE TOKEN" onPress={onPressSave}></Button>
-          ) : (
-            <>
-              <Button title="PASTE TOKEN" onPress={onPressPasteToken}></Button>
-              <Button title="SAVE TOKEN" onPress={onPressSave}></Button>
-            </>
-          )}
-          ;
-        </> */}
       </View>
-      {/* <Text style={styles.pat}>
-        To get a token, navigate to the bottom of the RC settings page and `+
-        Create Token`. Copy to clipboard.
-      </Text> */}
       <Button title="GET A TOKEN" onPress={onPressGetToken}></Button>
       <View style={styles.closeButton}>
         <Button title="CLOSE SETTINGS" onPress={toggleSettings}></Button>
@@ -229,6 +214,7 @@ const styles = StyleSheet.create({
   rightView: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
   },
   tokenText: {
     fontSize: 20,
@@ -241,8 +227,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   rightButton: {
-    height: 25,
-    width: 25,
+    height: 30,
+    width: 30,
+    // backgroundColor: "pink",
     marginHorizontal: 20,
   },
   extraModal: {
@@ -261,5 +248,28 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 25,
     bottom: 25,
+  },
+
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: "#E9ECEF",
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: "100%",
+    flexDirection: "row",
+    paddingHorizontal: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#151E26",
   },
 });

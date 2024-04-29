@@ -1,163 +1,167 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { useState, useEffect } from 'react';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
+import { useState, useEffect } from "react";
+import { openBrowserAsync } from "expo-web-browser";
+import { SettingsMenu } from "./settingsMenu";
 
 export default function App() {
-  const [bannerText, setBannerText] = useState('');
-  const [token, setToken] = useState('');
-  // const token = '';
-  
-  // useEffect(() => {
-  //   const fetchToken = async () => {
-  //     try {
-  //       const storedToken = await AsyncStorage.getItem('token');
-  //       if (storedToken !== null) {
-  //         setToken(storedToken);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching token:', error);
-  //     }
-  //   };
+  const [bannerText, setBannerText] = useState("");
+  const [isBannerOpen, setIsBannerOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [token, setToken] = useState(null);
 
-  //   fetchToken();
-  // }, []);
+  const toggleBanner = () => {
+    setIsBannerOpen(!isBannerOpen);
+  };
 
-  // const storeToken = async (newToken) => {
-  //   try {
-  //     await AsyncStorage.setItem('token', newToken);
-  //     setToken(newToken);
-  //   } catch (error) {
-  //     console.error('Error storing token:', error);
-  //   }
-  // };
+  useEffect(() => {
+    if (isBannerOpen) {
+      const timer = setTimeout(() => {
+        toggleBanner();
+      }, 2000);
 
-  // const removeToken = async () => {
-  //   try {
-  //     await AsyncStorage.removeItem('token');
-  //     setToken(null);
-  //   } catch (error) {
-  //     console.error('Error removing token:', error);
-  //   }
-  // };
+      return () => clearTimeout(timer);
+    }
+  }, [isBannerOpen]);
 
   const onPressDoorbotBuzz = () => {
-    setBannerText('Buzz button pressed');
-  }
-    
-  const onPressDoorbotElevator = () => {
-    setBannerText('Elevator button pressed'); 
-    sendPostRequest('buzz_mobile')
-  }
-  
-  const onPressDoorbotStatus = () => {
-    setBannerText('Status button pressed');
-    sendPostRequest('unlock_mobile')
-  }
-  
-  const onPressOpenSettings = async () => {
-    setBannerText('Changing settings');
-    try {
-      console.log('pressed settings')
-   } catch (error) {
-      console.error('Error sending post request:', error);
-   }
-  }
-  const onPressBleh = () => {
-    console.log('pressed bleh');
-  }
+    setIsBannerOpen(true);
+    setBannerText("Buzz button pressed");
+    console.log("buzz pressed");
+  };
 
-  const sendPostRequest = async (action) => {
-    try {
-      let method = 'POST';
-      if (action == 'status_mobile') {
-        method = 'GET';
-      }
-      const response = await fetch('https://doorbot.recurse.com/' + action, {
-        method: method,
-        headers: {
-          'Authorization': 'Bearer ' + token,
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.status);
-      }
-      const responseData = await response.text(); 
-      console.log('Response:', responseData); 
-    } catch (error) {
-      console.error('Error:', error);
-    }}
+  const onPressDoorbotElevator = () => {
+    setIsBannerOpen(true);
+    setBannerText("Elevator button pressed");
+    console.log("elevator pressed");
+  };
+
+  const onPressCheckIn = () => {
+    setIsBannerOpen(true);
+    setBannerText("Checkin button pressed");
+    console.log("checkin pressed");
+  };
+
+  const onPressDoorbotStatus = () => {
+    setIsBannerOpen(true);
+    setBannerText("Status button pressed");
+    console.log("status pressed");
+  };
+
+  const onPressSettings = () => {
+    setIsBannerOpen(true);
+    setBannerText("Settings button pressed");
+    console.log("settings pressed");
+  };
+
+  const onPressMenu = () => {
+    console.log("menu pressed");
+    toggleSettings();
+  };
+
+  const toggleSettings = () => {
+    setIsSettingsOpen(!isSettingsOpen);
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.banner} >
-        <Text style={styles.bannerText}>{bannerText}</Text>
-      </View>
-      <Text>Open up App.js to start working on your app!</Text>
-      <View style={styles.buttonContainer}>
-        {/* <TouchableOpacity style={styles.button}  onPress={() => onPressDoorbotBuzz()}>
-          <Text style={styles.buttonText}>BUZZ</Text>
-        </TouchableOpacity> */}
-        <Button title="BUZZ" color='#ff6262' onPress={() => onPressDoorbotBuzz()}/>
-        {/* <Button title="ELEVATOR" color='#08acd5' onPress={() => onPressDoorbotElevator()}/> */}
-        <Button title="CHECK STATUS" color='#eeac9c'/>
-      </View>
-      <View style={styles.settingsButtonContainer}>
-        <Button title="Settings" color='#7b2941' onPress={() => onPressOpenSettings()}/>
-        <Button title="Bleh" color='#7b2941' onPress={() => onPressBleh()}/>
+      <Modal animationType="fade" transparent={true} visible={isBannerOpen}>
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>{bannerText}</Text>
+        </View>
+      </Modal>
+
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: "#529ce6" }]}
+        onPress={onPressDoorbotBuzz}
+      >
+        <Text style={styles.buttonText}>BUZZ</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: "#ff6a73" }]}
+        onPress={onPressDoorbotElevator}
+      >
+        <Text style={styles.buttonText}>ELEVATOR</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: "#3194a4" }]}
+        onPress={onPressCheckIn}
+      >
+        <Text style={styles.buttonText}>HUB CHECK IN</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: "#d55ad5" }]}
+        onPress={onPressDoorbotStatus}
+      >
+        <Text style={styles.buttonText}>CHECK STATUS</Text>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isSettingsOpen}
+        onRequestClose={toggleSettings}
+      >
+        <SettingsMenu toggleSettings={toggleSettings} />
+      </Modal>
+
+      <View style={styles.settings}>
+        <Button title="SETTINGS" onPress={onPressSettings} />
+        <Button title="OPEN MENU" onPress={onPressMenu} />
       </View>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: StatusBar.currentHeight,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   banner: {
-    backgroundColor: '#8bd5ee',
-    padding: 10,
-    width: '100%',
-    alignItems: 'center',
+    position: "absolute",
+    top: 50,
+    height: 60,
+    backgroundColor: "#73bdff",
+    width: "110%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   bannerText: {
-    color: 'white',
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    color: "white",
+    fontSize: 20,
   },
   button: {
+    height: 120,
+    width: 250,
+    backgroundColor: "lavender",
+    marginTop: 15,
+    marginBottom: 15,
     borderRadius: 10,
-    width: 200,
-    height: 100,
-    paddingTop: 20,
-    backgroundColor:'#ff6262',
-    margin: 20,
-    alignContent: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: "white",
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  buttonContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-evenly',
-    marginTop: 20,
+  settings: {
+    position: "absolute",
+    right: 25,
+    bottom: 25,
   },
-  // settingsButtonContainer: {
-  //   position: 'absolute',
-  //   right: 20,
-  //   bottom: 20,
-  // },
 });
-

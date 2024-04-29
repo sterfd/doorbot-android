@@ -1,13 +1,19 @@
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { useState } from "react";
 import { openBrowserAsync } from "expo-web-browser";
+import * as Clipboard from "expo-clipboard";
 
 export function SettingsMenu({ toggleSettings }) {
-  const [token, setToken] = useState("");
-  const [text, onChangeText] = useState("");
+  const [token, setToken] = useState(null);
+  const [text, setText] = useState("");
 
   const onPressSave = () => {
     setToken(text);
+  };
+
+  const onPressPasteToken = async () => {
+    const text = await Clipboard.getStringAsync();
+    setText(text);
   };
 
   const onPressGetToken = () => {
@@ -23,12 +29,20 @@ export function SettingsMenu({ toggleSettings }) {
           value={text}
           multiline
           numberOfLines={3}
-          onChangeText={onChangeText}
+          onChangeText={setText}
           placeholder="None"
         />
-        {/* <Button title="DELETE TOKEN" onPress={onPressSave}></Button>    if token != '' */}
-        <Button title="PASTE TOKEN" onPress={onPressSave}></Button>
-        <Button title="SAVE TOKEN" onPress={onPressSave}></Button>
+        {/* <>
+          {token ? (
+            <Button title="DELETE TOKEN" onPress={onPressSave}></Button>
+          ) : (
+            <>
+              <Button title="PASTE TOKEN" onPress={onPressPasteToken}></Button>
+              <Button title="SAVE TOKEN" onPress={onPressSave}></Button>
+            </>
+          )}
+          ;
+        </> */}
       </View>
       <Text style={styles.pat}>
         To get a token, navigate to the bottom of the RC settings page and `+

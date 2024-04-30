@@ -105,8 +105,8 @@ export function SettingsMenu({ toggleSettings }) {
     }
   };
 
-  const copyTokenToClipboard = async () => {
-    await Clipboard.setAsyncString(token);
+  const copyTokenToClipboard = () => {
+    Clipboard.setString(token);
     console.log("Token copied to clipboard");
     setIsBannerOpen(true);
     setBannerText("Token copied to clipboard");
@@ -341,5 +341,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 
-  visibleTokenContainer: {},
+  visibleTokenContainer: {
+    backgroundColor: "yellow",
+  },
 });

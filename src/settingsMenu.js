@@ -85,7 +85,14 @@ export function SettingsMenu({ toggleSettings }) {
     } else {
       // reveal token logic
       console.log("reavel token");
+      setTokenRevealed(!tokenRevealed);
     }
+  };
+
+  const copyTokenToClipboard = () => {
+    Clipboard.setString(token);
+    console.log("Token copied to clipboard");
+    // maybe have a banner or modal show this!
   };
 
   const onPressInfo = () => {
@@ -107,8 +114,18 @@ export function SettingsMenu({ toggleSettings }) {
             <View style={styles.addButton}>
               <View style={styles.buttonContent}>
                 <View style={styles.rightView}>
-                  {/* replace this with stars */}
-                  <Text style={styles.tokenText}>{token} ******</Text>
+                  <TouchableOpacity
+                    onLongPress={copyTokenToClipboard}
+                    style={styles.visibleTokenContainer}
+                  >
+                    <Text
+                      style={styles.tokenText}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {tokenRevealed ? token : "*".repeat(token.length)}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.rightView}>
                   <TouchableOpacity
@@ -129,14 +146,15 @@ export function SettingsMenu({ toggleSettings }) {
                   style={styles.optionButton}
                   onPress={() => handleExtraSelected("Reveal")}
                 >
-                  <Text style={styles.optionText}>Reveal Token</Text>
+                  <Text style={styles.optionText}>
+                    {tokenRevealed ? "Hide Token" : "Reveal Token"}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
                     ...styles.optionButton,
-                    marginTop: 5,
-                    // borderTopWidth: 1,
-                    // borderColor: "lightgray",
+                    borderTopWidth: 1,
+                    borderColor: "lightgray",
                   }}
                   onPress={() => handleExtraSelected("Delete")}
                 >
@@ -208,7 +226,7 @@ export function SettingsMenu({ toggleSettings }) {
 const styles = StyleSheet.create({
   menu: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#fafafa",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -265,12 +283,11 @@ const styles = StyleSheet.create({
     right: 25,
     bottom: 25,
   },
-
   dropdown: {
     position: "absolute",
     top: 50,
     right: 20,
-    backgroundColor: "lightblue",
+    backgroundColor: "#fff",
     borderRadius: 5,
     zIndex: 1,
   },
@@ -280,10 +297,12 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 20,
+    textAlign: "center",
   },
   optionButton: {
-    // backgroundCoxslor: "white",
     paddingVertical: 10,
     paddingHorizontal: 10,
   },
+
+  visibleTokenContainer: {},
 });

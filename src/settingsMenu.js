@@ -19,6 +19,7 @@ export function SettingsMenu({ toggleSettings }) {
   const [bannerText, setBannerText] = useState("");
   const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [tokenRevealed, setTokenRevealed] = useState(false);
+  const [isAddTokenExpanded, setIsAddTokenExpanded] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isExtraOpen, setIsExtraOpen] = useState(false);
 
@@ -26,14 +27,10 @@ export function SettingsMenu({ toggleSettings }) {
     loadToken();
   }, []);
 
-  const toggleBanner = () => {
-    setIsBannerOpen(!isBannerOpen);
-  };
-
   useEffect(() => {
     if (isBannerOpen) {
       const timer = setTimeout(() => {
-        toggleBanner();
+        setIsBannerOpen(false);
       }, 1000);
 
       return () => clearTimeout(timer);
@@ -80,13 +77,8 @@ export function SettingsMenu({ toggleSettings }) {
 
   const handleAdd = () => {
     console.log("add pressed");
+    setIsAddTokenExpanded(true);
     openBrowserAsync("https://www.recurse.com/settings/apps");
-    // have paste token button -> should display wahts pasted
-    // save token button
-  };
-
-  const toggleExtra = () => {
-    setIsExtraOpen(!isExtraOpen);
   };
 
   const handleOutsidePress = () => {
@@ -135,24 +127,24 @@ export function SettingsMenu({ toggleSettings }) {
           <View>
             <View style={styles.addButton}>
               <View style={styles.buttonContent}>
-                <View style={styles.rightView}>
-                  <TouchableOpacity
-                    onLongPress={copyTokenToClipboard}
-                    style={styles.visibleTokenContainer}
+                <TouchableOpacity
+                  onLongPress={copyTokenToClipboard}
+                  style={styles.visibleTokenContainer}
+                >
+                  <Text
+                    style={styles.tokenText}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
                   >
-                    <Text
-                      style={styles.tokenText}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      {tokenRevealed ? token : "*".repeat(token.length)}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                    {tokenRevealed ? token : "*".repeat(token.length)}
+                  </Text>
+                </TouchableOpacity>
                 <View style={styles.rightView}>
                   <TouchableOpacity
                     style={styles.rightButton}
-                    onPress={toggleExtra}
+                    onPress={() => {
+                      setIsExtraOpen(true);
+                    }}
                   >
                     <Image
                       source={require("./ellipsis.png")}
@@ -162,38 +154,8 @@ export function SettingsMenu({ toggleSettings }) {
                 </View>
               </View>
             </View>
-            {isExtraOpen && (
-              <View style={styles.dropdown}>
-                <TouchableOpacity
-                  style={styles.optionButton}
-                  onPress={() => handleExtraSelected("Reveal")}
-                >
-                  <Text style={styles.optionText}>
-                    {tokenRevealed ? "Hide Token" : "Reveal Token"}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    ...styles.optionButton,
-                    borderTopWidth: 1,
-                    borderColor: "lightgray",
-                  }}
-                  onPress={() => handleExtraSelected("Delete")}
-                >
-                  <Text style={styles.optionText}>Delete Token</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            {isExtraOpen && (
-              <TouchableOpacity
-                style={styles.overlay}
-                onPress={handleOutsidePress}
-              ></TouchableOpacity>
-            )}
           </View>
         ) : (
-          // no token - have the + Add token and the i for more info and screenshots/text explanation
-          // open a text input with paste and save buttons
           <TouchableOpacity
             style={{ ...styles.addButton, backgroundColor: "#ff7394" }}
             onPress={handleAdd}
@@ -232,6 +194,34 @@ export function SettingsMenu({ toggleSettings }) {
       <View style={styles.closeButton}>
         <Button title="CLOSE SETTINGS" onPress={toggleSettings}></Button>
       </View>
+      {isExtraOpen && (
+        <View style={styles.dropdown}>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => handleExtraSelected("Reveal")}
+          >
+            <Text style={styles.optionText}>
+              {tokenRevealed ? "Hide Token" : "Reveal Token"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              ...styles.optionButton,
+              borderTopWidth: 1,
+              borderColor: "lightgray",
+            }}
+            onPress={() => handleExtraSelected("Delete")}
+          >
+            <Text style={styles.optionText}>Delete Token</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {isExtraOpen && (
+        <TouchableOpacity
+          style={styles.overlay}
+          onPress={handleOutsidePress}
+        ></TouchableOpacity>
+      )}
 
       <Modal
         animationType="slide"
@@ -322,8 +312,8 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    top: 50,
-    right: 20,
+    top: 230,
+    right: 42,
     backgroundColor: "#fff",
     borderRadius: 5,
     zIndex: 1,
@@ -331,6 +321,7 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   optionText: {
     fontSize: 20,

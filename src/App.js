@@ -15,14 +15,10 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [token, setToken] = useState(null);
 
-  const toggleBanner = () => {
-    setIsBannerOpen(!isBannerOpen);
-  };
-
   useEffect(() => {
     if (isBannerOpen) {
       const timer = setTimeout(() => {
-        toggleBanner();
+        setIsBannerOpen(false);
       }, 1000);
 
       return () => clearTimeout(timer);

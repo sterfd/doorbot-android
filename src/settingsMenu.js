@@ -10,13 +10,16 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import { openBrowserAsync } from "expo-web-browser";
+import { InfoMenu } from "./infoMenu";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
   const [text, setText] = useState("");
-  const [extraVisible, setExtraVisible] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isExtraOpen, setIsExtraOpen] = useState(false);
+  const [selectedExtra, setSelectedExtra] = useState("");
 
   useEffect(() => {
     loadToken();
@@ -59,21 +62,39 @@ export function SettingsMenu({ toggleSettings }) {
     setText(text);
   };
 
-  const onPressGetToken = () => {
-    openBrowserAsync("https://www.recurse.com/settings/apps");
-  };
-
   const handleAdd = () => {
     console.log("add pressed");
+    openBrowserAsync("https://www.recurse.com/settings/apps");
+    // have paste token button -> should display wahts pasted
+    // save token button
   };
 
-  const handleInfo = () => {
+  const toggleExtra = () => {
+    setIsExtraOpen(!isExtraOpen);
+  };
+
+  const handleOutsidePress = () => {
+    setIsExtraOpen(false);
+  };
+
+  const handleExtraSelected = (option) => {
+    setSelectedExtra(option);
+    setIsExtraOpen(false);
+    if (option === "Delete Token") {
+      deleteToken();
+    } else {
+      // reveal token logic
+      console.log("reavel token");
+    }
+  };
+
+  const onPressInfo = () => {
     console.log("info pressed");
+    toggleInfo();
   };
 
-  const handleExtra = (option) => {
-    console.log("Option selected: ", option);
-    setExtraVisible(false);
+  const toggleInfo = () => {
+    setIsInfoOpen(!isInfoOpen);
   };
 
   return (
@@ -85,14 +106,14 @@ export function SettingsMenu({ toggleSettings }) {
           <View>
             <View style={styles.addButton}>
               <View style={styles.buttonContent}>
-                <View style={styles.leftView}>
+                <View style={styles.rightView}>
                   {/* replace this with stars */}
                   <Text style={styles.tokenText}>{token} ******</Text>
                 </View>
                 <View style={styles.rightView}>
                   <TouchableOpacity
                     style={styles.rightButton}
-                    onPress={() => setExtraVisible(true)}
+                    onPress={toggleExtra}
                   >
                     <Image
                       source={require("./ellipsis.png")}
@@ -102,30 +123,28 @@ export function SettingsMenu({ toggleSettings }) {
                 </View>
               </View>
             </View>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={extraVisible}
-              onRequestClose={() => setExtraVisible(false)}
-            >
-              <View style={styles.extraModal}>
+            {isExtraOpen && (
+              <View style={styles.dropdown}>
                 <TouchableOpacity
-                  onPress={() => handleExtra("reveal")}
-                  style={styles.extraOption}
+                  style={styles.optionButton}
+                  onPress={() => handleExtraSelected("Reveal")}
                 >
-                  <Text>Reveal Token</Text>
+                  <Text style={styles.optionText}>Reveal Token</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => handleExtra("delete")}
-                  style={styles.extraOption}
+                  style={{
+                    ...styles.optionButton,
+                    borderTopWidth: 1,
+                    borderColor: "lightgray",
+                  }}
+                  onPress={() => handleExtraSelected("Delete")}
                 >
-                  <Text>Delete Token</Text>
+                  <Text style={styles.optionText}>Delete Token</Text>
                 </TouchableOpacity>
               </View>
-            </Modal>
+            )}
           </View>
         ) : (
-          // </TouchableOpacity>
           // no token - have the + Add token and the i for more info and screenshots/text explanation
           // open a text input with paste and save buttons
           <TouchableOpacity
@@ -133,7 +152,7 @@ export function SettingsMenu({ toggleSettings }) {
             onPress={handleAdd}
           >
             <View style={styles.buttonContent}>
-              <View style={styles.leftView}>
+              <View style={styles.rightView}>
                 <Image
                   source={require("./add.png")}
                   style={styles.icon}
@@ -144,7 +163,7 @@ export function SettingsMenu({ toggleSettings }) {
               <View style={styles.rightView}>
                 <TouchableOpacity
                   style={styles.rightButton}
-                  onPress={handleInfo}
+                  onPress={onPressInfo}
                 >
                   <Image
                     source={require("./info.png")}
@@ -156,40 +175,30 @@ export function SettingsMenu({ toggleSettings }) {
           </TouchableOpacity>
         )}
 
-        {/* <TextInput
-          style={styles.pat}
-          value={text}
-          multiline
-          numberOfLines={3}
-          onChangeText={setText}
-          placeholder="None"
-        /> */}
-        <Button title="DELETE" onPress={deleteToken}></Button>
         <Button title="GET ASYNC STORAGE" onPress={loadToken}></Button>
         <Button
           title="SAVE ASYNC STORAGE"
           onPress={onPressSaveStorage}
         ></Button>
-        {/* <>
-          {token ? (
-            <Button title="DELETE TOKEN" onPress={onPressSave}></Button>
-          ) : (
-            <>
-              <Button title="PASTE TOKEN" onPress={onPressPasteToken}></Button>
-              <Button title="SAVE TOKEN" onPress={onPressSave}></Button>
-            </>
-          )}
-          ;
-        </> */}
       </View>
-      {/* <Text style={styles.pat}>
-        To get a token, navigate to the bottom of the RC settings page and `+
-        Create Token`. Copy to clipboard.
-      </Text> */}
-      <Button title="GET A TOKEN" onPress={onPressGetToken}></Button>
       <View style={styles.closeButton}>
         <Button title="CLOSE SETTINGS" onPress={toggleSettings}></Button>
       </View>
+      {isExtraOpen && (
+        <TouchableOpacity
+          style={styles.overlay}
+          onPress={handleOutsidePress}
+        ></TouchableOpacity>
+      )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isInfoOpen}
+        onRequestClose={toggleInfo}
+      >
+        <InfoMenu toggleInfo={toggleInfo} />
+      </Modal>
     </View>
   );
 }
@@ -229,6 +238,7 @@ const styles = StyleSheet.create({
   rightView: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
   },
   tokenText: {
     fontSize: 20,
@@ -239,27 +249,41 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     marginHorizontal: 10,
+    alignSelf: "center",
   },
   rightButton: {
-    height: 25,
-    width: 25,
+    height: 35,
+    width: 35,
+    backgroundColor: "pink",
     marginHorizontal: 20,
+    justifyContent: "center",
   },
-  extraModal: {
-    marginTop: "auto",
-    backgroundColor: "white",
-    borderTopWidth: 1,
-    borderTopColor: "lightgray",
-  },
-  extraOption: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "lightgray",
-  },
-
   closeButton: {
     position: "absolute",
     right: 25,
     bottom: 25,
+  },
+
+  dropdown: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 10,
+    zIndex: 1,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    // backgroundColor: "rgba(0,0,0,0.5)",
+    zIndex: 0,
+  },
+  optionText: {
+    fontSize: 20,
+  },
+  optionButton: {
+    backgroundColor: "#fff",
+    marginVertical: 2,
+    marginHorizontal: 5,
   },
 });

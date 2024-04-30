@@ -16,7 +16,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
-  const [text, setText] = useState("");
+  const [bannerText, setBannerText] = useState("");
+  const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [tokenRevealed, setTokenRevealed] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isExtraOpen, setIsExtraOpen] = useState(false);
@@ -25,12 +26,25 @@ export function SettingsMenu({ toggleSettings }) {
     loadToken();
   }, []);
 
+  const toggleBanner = () => {
+    setIsBannerOpen(!isBannerOpen);
+  };
+
+  useEffect(() => {
+    if (isBannerOpen) {
+      const timer = setTimeout(() => {
+        toggleBanner();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isBannerOpen]);
+
   const loadToken = async () => {
     try {
       const value = await AsyncStorage.getItem("token");
       if (value !== null) {
         console.log(value);
-        setText(value);
         setToken(value);
       }
     } catch (e) {
@@ -42,7 +56,6 @@ export function SettingsMenu({ toggleSettings }) {
     try {
       await AsyncStorage.removeItem("token");
       setToken(null);
-      setText("");
       console.log("delted token");
     } catch (e) {
       console.log(e);
@@ -51,7 +64,10 @@ export function SettingsMenu({ toggleSettings }) {
 
   const onPressSaveStorage = async (value) => {
     try {
-      await AsyncStorage.setItem("token", "asdfzxcvqwer");
+      await AsyncStorage.setItem(
+        "token",
+        "asdfzxcvqwerasdflk;ajsdflk;asjdfasdlkf;jw34e"
+      );
     } catch (e) {
       console.log(e);
     }
@@ -89,10 +105,11 @@ export function SettingsMenu({ toggleSettings }) {
     }
   };
 
-  const copyTokenToClipboard = () => {
-    Clipboard.setString(token);
+  const copyTokenToClipboard = async () => {
+    await Clipboard.setAsyncString(token);
     console.log("Token copied to clipboard");
-    // maybe have a banner or modal show this!
+    setIsBannerOpen(true);
+    setBannerText("Token copied to clipboard");
   };
 
   const onPressInfo = () => {
@@ -106,6 +123,11 @@ export function SettingsMenu({ toggleSettings }) {
 
   return (
     <View style={styles.menu}>
+      <Modal animationType="fade" transparent={true} visible={isBannerOpen}>
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>{bannerText}</Text>
+        </View>
+      </Modal>
       <View style={styles.tokenContainer}>
         <Text style={styles.pat}>Personal Access Token:</Text>
         {token ? (
@@ -230,6 +252,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  banner: {
+    position: "absolute",
+    top: 50,
+    height: 60,
+    backgroundColor: "#73bdff",
+    width: "110%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bannerText: {
+    color: "white",
+    fontSize: 20,
+  },
+
   tokenContainer: {
     position: "absolute",
     top: 150,
@@ -237,6 +273,7 @@ const styles = StyleSheet.create({
   pat: {
     fontSize: 24,
     textAlign: "left",
+    fontWeight: "bold",
   },
   addButton: {
     height: 50,
@@ -262,8 +299,8 @@ const styles = StyleSheet.create({
   },
   tokenText: {
     fontSize: 20,
-    fontWeight: "bold",
-    marginLeft: 10,
+    marginLeft: 15,
+    width: 250,
   },
   icon: {
     height: 25,
@@ -275,7 +312,7 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
     backgroundColor: "pink",
-    marginHorizontal: 20,
+    marginRight: 10,
     justifyContent: "center",
   },
   closeButton: {

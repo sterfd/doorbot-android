@@ -9,7 +9,6 @@ import {
   Modal,
 } from "react-native";
 import { useState, useEffect } from "react";
-import SelectDropdown from "react-native-select-dropdown";
 import { openBrowserAsync } from "expo-web-browser";
 import { InfoMenu } from "./infoMenu";
 import * as Clipboard from "expo-clipboard";
@@ -19,6 +18,8 @@ export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
   const [text, setText] = useState("");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isExtraOpen, setIsExtraOpen] = useState(false);
+  const [selectedExtra, setSelectedExtra] = useState("");
 
   useEffect(() => {
     loadToken();
@@ -68,11 +69,17 @@ export function SettingsMenu({ toggleSettings }) {
     // save token button
   };
 
-  const handleInfo = () => {
-    console.log("info pressed");
+  const toggleExtra = () => {
+    setIsExtraOpen(!isExtraOpen);
   };
 
-  const handleExtra = (option) => {
+  const handleOutsidePress = () => {
+    setIsExtraOpen(false);
+  };
+
+  const handleExtraSelected = (option) => {
+    setSelectedExtra(option);
+    setIsExtraOpen(false);
     if (option === "Delete Token") {
       deleteToken();
     } else {
@@ -104,46 +111,38 @@ export function SettingsMenu({ toggleSettings }) {
                   <Text style={styles.tokenText}>{token} ******</Text>
                 </View>
                 <View style={styles.rightView}>
-                  {/* <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.rightButton}
-                    onPress={() => setExtraVisible(true)}
+                    onPress={toggleExtra}
                   >
                     <Image
                       source={require("./ellipsis.png")}
                       style={styles.icon}
                     ></Image>
-                  </TouchableOpacity> */}
-
-                  <SelectDropdown
-                    data={["Reveal Token", "Delete Token"]}
-                    onSelect={(selectedItem) => {
-                      handleExtra(selectedItem);
-                    }}
-                    renderButton={() => {
-                      return (
-                        <View style={styles.rightButton}>
-                          <Image
-                            source={require("./ellipsis.png")}
-                            style={styles.icon}
-                          ></Image>
-                        </View>
-                      );
-                    }}
-                    renderItem={(item) => {
-                      return (
-                        <View style={styles.dropdownItemStyle}>
-                          <Text style={styles.dropdownItemTxtStyle}>
-                            {item}
-                          </Text>
-                        </View>
-                      );
-                    }}
-                    showsVerticalScrollIndicator={false}
-                    dropdownStyle={styles.dropdownMenuStyle}
-                  />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
+            {isExtraOpen && (
+              <View style={styles.dropdown}>
+                <TouchableOpacity
+                  style={styles.optionButton}
+                  onPress={() => handleExtraSelected("Reveal")}
+                >
+                  <Text style={styles.optionText}>Reveal Token</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    ...styles.optionButton,
+                    borderTopWidth: 1,
+                    borderColor: "lightgray",
+                  }}
+                  onPress={() => handleExtraSelected("Delete")}
+                >
+                  <Text style={styles.optionText}>Delete Token</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         ) : (
           // no token - have the + Add token and the i for more info and screenshots/text explanation
@@ -185,6 +184,12 @@ export function SettingsMenu({ toggleSettings }) {
       <View style={styles.closeButton}>
         <Button title="CLOSE SETTINGS" onPress={toggleSettings}></Button>
       </View>
+      {isExtraOpen && (
+        <TouchableOpacity
+          style={styles.overlay}
+          onPress={handleOutsidePress}
+        ></TouchableOpacity>
+      )}
 
       <Modal
         animationType="slide"
@@ -220,13 +225,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 10,
     marginVertical: 10,
-    // position: "relative",
   },
   buttonContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // position: "relative",
   },
   leftView: {
     flexDirection: "row",
@@ -255,43 +258,32 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     justifyContent: "center",
   },
-  extraModal: {
-    marginTop: "auto",
-    backgroundColor: "white",
-    borderTopWidth: 1,
-    borderTopColor: "lightgray",
-  },
-  extraOption: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "lightgray",
-  },
   closeButton: {
     position: "absolute",
     right: 25,
     bottom: 25,
   },
 
-  dropdownMenuStyle: {
-    backgroundColor: "#E9ECEF",
-    borderRadius: 8,
-    width: 200,
+  dropdown: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 10,
+    zIndex: 1,
   },
-  dropdownItemStyle: {
-    width: 150,
-    // position: "absolute",
-    // right: 100,
-    // bottom: 100,
-    // flexDirection: "row",
-    paddingHorizontal: 12,
-    // justifyContent: "center",
-    // alignItems: "center",
-    paddingVertical: 8,
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    // backgroundColor: "rgba(0,0,0,0.5)",
+    zIndex: 0,
   },
-  dropdownItemTxtStyle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: "500",
-    color: "#151E26",
+  optionText: {
+    fontSize: 20,
+  },
+  optionButton: {
+    backgroundColor: "#fff",
+    marginVertical: 2,
+    marginHorizontal: 5,
   },
 });

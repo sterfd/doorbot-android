@@ -17,9 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
   const [text, setText] = useState("");
+  const [tokenRevealed, setTokenRevealed] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isExtraOpen, setIsExtraOpen] = useState(false);
-  const [selectedExtra, setSelectedExtra] = useState("");
 
   useEffect(() => {
     loadToken();
@@ -78,9 +78,9 @@ export function SettingsMenu({ toggleSettings }) {
   };
 
   const handleExtraSelected = (option) => {
-    setSelectedExtra(option);
     setIsExtraOpen(false);
-    if (option === "Delete Token") {
+    if (option === "Delete") {
+      console.log("delete token");
       deleteToken();
     } else {
       // reveal token logic
@@ -134,14 +134,21 @@ export function SettingsMenu({ toggleSettings }) {
                 <TouchableOpacity
                   style={{
                     ...styles.optionButton,
-                    borderTopWidth: 1,
-                    borderColor: "lightgray",
+                    marginTop: 5,
+                    // borderTopWidth: 1,
+                    // borderColor: "lightgray",
                   }}
                   onPress={() => handleExtraSelected("Delete")}
                 >
                   <Text style={styles.optionText}>Delete Token</Text>
                 </TouchableOpacity>
               </View>
+            )}
+            {isExtraOpen && (
+              <TouchableOpacity
+                style={styles.overlay}
+                onPress={handleOutsidePress}
+              ></TouchableOpacity>
             )}
           </View>
         ) : (
@@ -174,7 +181,8 @@ export function SettingsMenu({ toggleSettings }) {
             </View>
           </TouchableOpacity>
         )}
-
+      </View>
+      <View>
         <Button title="GET ASYNC STORAGE" onPress={loadToken}></Button>
         <Button
           title="SAVE ASYNC STORAGE"
@@ -184,12 +192,6 @@ export function SettingsMenu({ toggleSettings }) {
       <View style={styles.closeButton}>
         <Button title="CLOSE SETTINGS" onPress={toggleSettings}></Button>
       </View>
-      {isExtraOpen && (
-        <TouchableOpacity
-          style={styles.overlay}
-          onPress={handleOutsidePress}
-        ></TouchableOpacity>
-      )}
 
       <Modal
         animationType="slide"
@@ -268,22 +270,20 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 50,
     right: 20,
-    backgroundColor: "white",
+    backgroundColor: "lightblue",
     borderRadius: 5,
-    padding: 10,
     zIndex: 1,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    // backgroundColor: "rgba(0,0,0,0.5)",
     zIndex: 0,
   },
   optionText: {
     fontSize: 20,
   },
   optionButton: {
-    backgroundColor: "#fff",
-    marginVertical: 2,
-    marginHorizontal: 5,
+    // backgroundCoxslor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
   },
 });

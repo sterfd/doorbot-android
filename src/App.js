@@ -8,12 +8,30 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import { SettingsMenu } from "./settingsMenu";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [bannerText, setBannerText] = useState("");
   const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const loadToken = async () => {
+      try {
+        const value = await AsyncStorage.getItem("token");
+        if (value !== null) {
+          console.log("got token on startup");
+          setToken(value);
+        } else {
+          toggleSettings();
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    loadToken();
+  }, []);
 
   useEffect(() => {
     if (isBannerOpen) {

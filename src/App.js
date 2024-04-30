@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import { SettingsMenu } from "./settingsMenu";
+import { sendRequest } from "./requests";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
@@ -43,28 +44,38 @@ export default function App() {
     }
   }, [isBannerOpen]);
 
-  const onPressDoorbotBuzz = () => {
+  const onPressDoorbotBuzz = async () => {
+    const { message } = await sendRequest("buzz_mobile", token);
     setIsBannerOpen(true);
-    setBannerText("Buzz button pressed");
+    setBannerText(message);
     console.log("buzz pressed");
   };
 
-  const onPressDoorbotElevator = () => {
+  const onPressDoorbotElevator = async () => {
+    const { message } = await sendRequest("unlock_mobile", token);
     setIsBannerOpen(true);
-    setBannerText("Elevator button pressed");
+    setBannerText(message);
     console.log("elevator pressed");
   };
 
-  const onPressCheckIn = () => {
+  const onPressCheckIn = async () => {
+    const { message } = await sendRequest("checkIn", token);
     setIsBannerOpen(true);
-    setBannerText("Checkin button pressed");
+    setBannerText(message);
     console.log("checkin pressed");
   };
 
-  const onPressDoorbotStatus = () => {
-    setIsBannerOpen(true);
-    setBannerText("Status button pressed");
-    console.log("status pressed");
+  const onPressDoorbotStatus = async () => {
+    try {
+      const { message } = await sendRequest("status_mobile", token);
+      setIsBannerOpen(true);
+      setBannerText(message);
+      console.log("status pressed");
+    } catch (e) {
+      console.error("Error: ", e);
+      setIsBannerOpen(true);
+      setBannerText("something went wrong", e);
+    }
   };
 
   const onPressMenu = () => {
@@ -141,7 +152,7 @@ const styles = StyleSheet.create({
     top: 50,
     height: 60,
     backgroundColor: "#73bdff",
-    width: "110%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },

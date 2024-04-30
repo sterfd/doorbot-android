@@ -19,25 +19,29 @@ export function InfoMenu({ toggleInfo }) {
   const [expandedStep, setExpandedStep] = useState(null);
 
   const DATA = [
-    { step: "Step 1. Log into RC", imageLink: require("./login.png"), id: 1 },
+    {
+      step: "Step 1. Log into RC",
+      imageLink: require("./images/login.png"),
+      id: 1,
+    },
     {
       step: "Step 2. Scroll to bottom of page",
-      imageLink: require("./settings.png"),
+      imageLink: require("./images/settings.png"),
       id: 2,
     },
     {
       step: "Step 3. Click Create Token",
-      imageLink: require("./createtoken.png"),
+      imageLink: require("./images/createtoken.png"),
       id: 3,
     },
     {
       step: "Step 4. Name your token",
-      imageLink: require("./nametoken.png"),
+      imageLink: require("./images/nametoken.png"),
       id: 4,
     },
     {
       step: "Step 5. Highlight and copy token",
-      imageLink: require("./copytoken.png"),
+      imageLink: require("./images/copytoken.png"),
       id: 5,
     },
   ];
@@ -56,7 +60,10 @@ export function InfoMenu({ toggleInfo }) {
           style={styles.item}
         >
           <Text style={styles.stepsText}>{item.step}</Text>
-          <Image source={require("./down.png")} style={styles.icon}></Image>
+          <Image
+            source={require("./images/down.png")}
+            style={styles.icon}
+          ></Image>
         </TouchableOpacity>
         {isExpanded && (
           <Image

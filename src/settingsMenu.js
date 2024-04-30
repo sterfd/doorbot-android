@@ -144,7 +144,7 @@ export function SettingsMenu({ toggleSettings }) {
                     }}
                   >
                     <Image
-                      source={require("./ellipsis.png")}
+                      source={require("./images/ellipsis.png")}
                       style={styles.icon}
                     ></Image>
                   </TouchableOpacity>
@@ -161,7 +161,7 @@ export function SettingsMenu({ toggleSettings }) {
               <View style={styles.buttonContent}>
                 <View style={styles.rightView}>
                   <Image
-                    source={require("./add.png")}
+                    source={require("./images/add.png")}
                     style={styles.icon}
                   ></Image>
                   <Text style={styles.tokenText}>Add Token</Text>
@@ -173,7 +173,7 @@ export function SettingsMenu({ toggleSettings }) {
                     onPress={onPressInfo}
                   >
                     <Image
-                      source={require("./info.png")}
+                      source={require("./images/info.png")}
                       style={styles.icon}
                     ></Image>
                   </TouchableOpacity>

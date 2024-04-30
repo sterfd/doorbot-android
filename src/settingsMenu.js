@@ -3,7 +3,6 @@ import {
   Text,
   View,
   Button,
-  TextInput,
   TouchableOpacity,
   Image,
   Modal,
@@ -16,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SettingsMenu({ toggleSettings }) {
   const [token, setToken] = useState(null);
+  const [pastedToken, setPastedToken] = useState(null);
   const [bannerText, setBannerText] = useState("");
   const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [tokenRevealed, setTokenRevealed] = useState(false);
@@ -61,10 +61,8 @@ export function SettingsMenu({ toggleSettings }) {
 
   const onPressSaveStorage = async (value) => {
     try {
-      await AsyncStorage.setItem(
-        "token",
-        "asdfzxcvqwerasdflk;ajsdflk;asjdfasdlkf;jw34e"
-      );
+      await AsyncStorage.setItem("token", pastedToken);
+      toggleSettings();
     } catch (e) {
       console.log(e);
     }
@@ -72,13 +70,13 @@ export function SettingsMenu({ toggleSettings }) {
 
   const onPressPasteToken = async () => {
     const text = await Clipboard.getStringAsync();
-    setText(text);
+    setPastedToken(text);
   };
 
   const handleAdd = () => {
     console.log("add pressed");
-    setIsAddTokenExpanded(true);
     openBrowserAsync("https://www.recurse.com/settings/apps");
+    setIsAddTokenExpanded(true);
   };
 
   const handleOutsidePress = () => {
@@ -91,7 +89,6 @@ export function SettingsMenu({ toggleSettings }) {
       console.log("delete token");
       deleteToken();
     } else {
-      // reveal token logic
       console.log("reavel token");
       setTokenRevealed(!tokenRevealed);
     }
@@ -156,40 +153,63 @@ export function SettingsMenu({ toggleSettings }) {
             </View>
           </View>
         ) : (
-          <TouchableOpacity
-            style={{ ...styles.addButton, backgroundColor: "#ff7394" }}
-            onPress={handleAdd}
-          >
-            <View style={styles.buttonContent}>
-              <View style={styles.rightView}>
-                <Image
-                  source={require("./add.png")}
-                  style={styles.icon}
-                ></Image>
-                <Text style={styles.tokenText}>Add Token</Text>
-              </View>
-
-              <View style={styles.rightView}>
-                <TouchableOpacity
-                  style={styles.rightButton}
-                  onPress={onPressInfo}
-                >
+          <View>
+            <TouchableOpacity
+              style={{ ...styles.addButton, backgroundColor: "#ff7394" }}
+              onPress={handleAdd}
+            >
+              <View style={styles.buttonContent}>
+                <View style={styles.rightView}>
                   <Image
-                    source={require("./info.png")}
+                    source={require("./add.png")}
                     style={styles.icon}
                   ></Image>
-                </TouchableOpacity>
+                  <Text style={styles.tokenText}>Add Token</Text>
+                </View>
+
+                <View style={styles.rightView}>
+                  <TouchableOpacity
+                    style={styles.rightButton}
+                    onPress={onPressInfo}
+                  >
+                    <Image
+                      source={require("./info.png")}
+                      style={styles.icon}
+                    ></Image>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            {isAddTokenExpanded && (
+              <View>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={onPressPasteToken}
+                >
+                  <Text style={styles.tokenText}>Paste Token</Text>
+                </TouchableOpacity>
+                {pastedToken !== null && (
+                  <View>
+                    <Text style={styles.tokenText}>Token:</Text>
+                    <Text
+                      style={styles.pastedTokenText}
+                      numberOfLines={3}
+                      ellipsizeMode="tail"
+                    >
+                      {pastedToken}
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.addButton}
+                      onPress={onPressSaveStorage}
+                    >
+                      <Text style={styles.tokenText}>Save Token</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
         )}
-      </View>
-      <View>
-        <Button title="GET ASYNC STORAGE" onPress={loadToken}></Button>
-        <Button
-          title="SAVE ASYNC STORAGE"
-          onPress={onPressSaveStorage}
-        ></Button>
       </View>
       <View style={styles.closeButton}>
         <Button title="CLOSE SETTINGS" onPress={toggleSettings}></Button>
@@ -292,6 +312,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     width: 250,
   },
+  pastedTokenText: { fontSize: 20, marginLeft: 15, width: 300 },
   icon: {
     height: 25,
     width: 25,

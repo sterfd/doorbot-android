@@ -23,7 +23,7 @@ export default function App() {
     if (isBannerOpen) {
       const timer = setTimeout(() => {
         toggleBanner();
-      }, 2000);
+      }, 1000);
 
       return () => clearTimeout(timer);
     }

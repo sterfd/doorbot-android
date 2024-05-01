@@ -19,7 +19,6 @@ const windowHeight = Dimensions.get("window").height;
 const baseUnit = Math.round(windowWidth / 100);
 
 export function SettingsMenu({ toggleSettings, token, setToken }) {
-  // const [token, setToken] = useState(null);
   const [pastedToken, setPastedToken] = useState(null);
   const [bannerText, setBannerText] = useState("");
   const [isBannerOpen, setIsBannerOpen] = useState(false);
@@ -48,22 +47,16 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
     try {
       const value = await AsyncStorage.getItem("token");
       if (value !== null) {
-        // console.log(value);
         setToken(value);
       }
-    } catch (e) {
-      // console.log(e);
-    }
+    } catch (e) {}
   };
 
   const deleteToken = async (value) => {
     try {
       await AsyncStorage.removeItem("token");
       setToken(null);
-      // console.log("delted token");
-    } catch (e) {
-      // console.log(e);
-    }
+    } catch (e) {}
   };
 
   const onPressSaveStorage = async (value) => {
@@ -71,9 +64,7 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
       await AsyncStorage.setItem("token", pastedToken);
       setToken(pastedToken);
       toggleSettings();
-    } catch (e) {
-      // console.log(e);
-    }
+    } catch (e) {}
   };
 
   // clipboard handling
@@ -85,14 +76,12 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
   // copy to clipboard
   const copyTokenToClipboard = () => {
     Clipboard.setString(token);
-    // console.log("Token copied to clipboard");
     setIsBannerOpen(true);
     setBannerText("Token copied to clipboard");
   };
 
   // if no token, add = open browser for rc settings and expand menu to paste token in
   const handleAdd = () => {
-    // console.log("add pressed");
     openBrowserAsync("https://www.recurse.com/settings/apps");
     setIsAddTokenExpanded(true);
   };
@@ -106,10 +95,8 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
   const handleExtraSelected = (option) => {
     setIsExtraOpen(false);
     if (option === "Delete") {
-      // console.log("delete token");
       deleteToken();
     } else {
-      // console.log("reavel token");
       setTokenRevealed(!tokenRevealed);
     }
   };
@@ -118,11 +105,6 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
   const handleOutsidePress = () => {
     setIsExtraOpen(false);
   };
-
-  // const onPressInfo = () => {
-  //   console.log("info pressed");
-  //   toggleInfo();
-  // };
 
   return (
     <View style={styles.menu}>
@@ -140,8 +122,6 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
               style={styles.button}
               onLongPress={tokenRevealed ? copyTokenToClipboard : null}
             >
-              {/* <View style={styles.buttonContent}>
-              <TouchableOpacity style={styles.visibleTokenContainer}> */}
               <Text
                 style={styles.tokenText}
                 numberOfLines={1}
@@ -149,7 +129,6 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
               >
                 {tokenRevealed ? token : "*".repeat(token.length)}
               </Text>
-              {/* <View style={styles.rightView}> */}
               <TouchableOpacity
                 style={{
                   ...styles.rightButton,
@@ -165,8 +144,6 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
                 ></Image>
               </TouchableOpacity>
             </TouchableOpacity>
-            {/* </View> */}
-            {/* // </TouchableOpacity> */}
           </View>
         ) : (
           // no token found - + Add Token with (i) on the right
@@ -175,16 +152,11 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
               style={{ ...styles.button, backgroundColor: "#ff7394" }}
               onPress={handleAdd}
             >
-              {/* <View style={styles.buttonContent}> */}
-              {/* <View style={styles.rightView}> */}
               <Image
                 source={require("./images/add.png")}
                 style={styles.icon}
               ></Image>
               <Text style={styles.tokenText}>Add Token</Text>
-              {/* </View> */}
-
-              {/* <View style={styles.rightView}> */}
               <TouchableOpacity style={styles.rightButton} onPress={toggleInfo}>
                 <Image
                   source={require("./images/info.png")}
@@ -194,8 +166,6 @@ export function SettingsMenu({ toggleSettings, token, setToken }) {
                   }}
                 ></Image>
               </TouchableOpacity>
-              {/* </View> */}
-              {/* </View> */}
             </TouchableOpacity>
 
             {isAddTokenExpanded && (
@@ -279,15 +249,10 @@ const styles = StyleSheet.create({
   menu: {
     flex: 1,
     backgroundColor: "#fafafa",
-    backgroundColor: "pink",
     alignItems: "center",
     justifyContent: "center",
   },
   banner: {
-    // position: "absolute",
-    // top: 50,
-    // height: 60,
-    // width: "110%",
     marginTop: windowHeight * 0.05,
     height: windowHeight * 0.08,
     width: "100%",
@@ -303,78 +268,42 @@ const styles = StyleSheet.create({
   tokenContainer: {
     position: "absolute",
     top: windowHeight * 0.2,
-    // top: 150,
   },
 
   pat: {
-    // fontSize: 24,
     fontSize: baseUnit * 6,
-    // textAlign: "left",
     fontWeight: "bold",
   },
 
   // for both Add Token and **** Token, Paste Token, Save Token
   button: {
-    // height: 50,
-    // width: 350,
-    // backgroundColor: "yellow",
     height: windowHeight * 0.055,
     width: windowWidth * 0.85,
     borderRadius: 10,
     backgroundColor: "#b4ffbd",
-    // alignContent: "center",
-    // justifyContent: "space-between",
     flexDirection: "row",
-    // justifyContent: "center",
     marginVertical: windowHeight * 0.015,
   },
   buttonContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "green",
   },
-  // leftView: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  // },
-  // rightView: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  // },
   tokenText: {
-    // fontSize: 20,
-    // marginLeft: 15,
-    // width: 250,
     fontSize: baseUnit * 5,
     marginLeft: windowWidth * 0.05,
     width: windowWidth * 0.6,
-    // height: windowHeight * 0.05,
-    // textAlignVertical: "center",
     marginTop: windowHeight * 0.013,
-    // backgroundColor: "yellow",
   },
-  // pastedTokenText: {
-  //   fontSize: 20,
-  //   marginLeft: 15,
-  //   width: 300,
-  // },
   icon: {
     height: windowHeight * 0.0275,
     width: windowHeight * 0.0275,
-    // height: 25,
-    // width: 25,
-    // marginHorizontal: 10,
     marginLeft: windowWidth * 0.03,
     alignSelf: "center",
   },
   rightButton: {
     height: windowHeight * 0.05,
     width: windowHeight * 0.05,
-    // backgroundColor: "pink",
-    // margin: 10,
-    // marginRight: windowWidth * 0.05,
     marginTop: windowHeight * 0.0025,
     justifyContent: "center",
   },
@@ -384,8 +313,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: windowHeight * 0.3025,
     right: windowWidth * 0.075,
-    // top: 230,
-    // right: 42,
     backgroundColor: "#fff",
     borderRadius: 5,
     zIndex: 1,
@@ -393,10 +320,8 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
   },
   optionText: {
-    // fontSize: 20,
     fontSize: baseUnit * 5,
     textAlign: "center",
   },
@@ -404,14 +329,8 @@ const styles = StyleSheet.create({
     padding: windowHeight * 0.01,
   },
 
-  // visibleTokenContainer: {
-  //   backgroundColor: "yellow",
-  // },
-
   closeButton: {
     position: "absolute",
-    // right: 25,
-    // bottom: 25,
     bottom: windowWidth * 0.05,
     right: windowWidth * 0.05,
   },

@@ -6,12 +6,17 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  Dimensions,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { openBrowserAsync } from "expo-web-browser";
 import { InfoMenu } from "./infoMenu";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+const baseUnit = Math.round(windowWidth / 100);
 
 export function SettingsMenu({ toggleSettings, token, setToken }) {
   // const [token, setToken] = useState(null);

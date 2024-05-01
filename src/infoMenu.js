@@ -11,9 +11,12 @@ import {
 } from "react-native";
 import { useState } from "react";
 
-const screenWidth = Dimensions.get("window").width;
-const imageWidth = screenWidth - 50;
-const aspectRatio = 19.5 / 9;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+const baseUnit = Math.round(windowWidth / 100);
+// const imageWidth = windowWidth - 50;
+const imageWidth = windowWidth * 0.9;
+const aspectRatio = windowHeight / windowWidth;
 
 export function InfoMenu({ toggleInfo }) {
   const [expandedStep, setExpandedStep] = useState(null);
@@ -54,7 +57,7 @@ export function InfoMenu({ toggleInfo }) {
     const isExpanded = expandedStep === item.id;
     const imageHeight = imageWidth * aspectRatio;
     return (
-      <View style={styles.itemContainer}>
+      <View>
         <TouchableOpacity
           onPress={() => toggleExpand(item.id)}
           style={styles.item}
@@ -81,11 +84,13 @@ export function InfoMenu({ toggleInfo }) {
 
   return (
     <SafeAreaView style={styles.SAV}>
-      <FlatList
-        data={DATA}
-        renderItem={Item}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      <View style={styles.flatlist}>
+        <FlatList
+          data={DATA}
+          renderItem={Item}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      </View>
       <View style={styles.close}>
         <Button
           style={styles.button}
@@ -99,16 +104,40 @@ export function InfoMenu({ toggleInfo }) {
 
 const styles = StyleSheet.create({
   SAV: { flex: 1, backgroundColor: "#ffffff" },
-  itemContainer: {},
+  flatlist: { marginBottom: windowHeight * 0.04 },
   item: {
-    padding: 10,
-    marginVertical: 10,
+    padding: windowHeight * 0.011,
+    marginVertical: windowHeight * 0.011,
+    // padding: 10,
+    // marginVertical: 10,
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 10,
   },
-  close: { position: "absolute", bottom: 25, right: 25 },
-  stepsText: { fontSize: 18, fontWeight: "bold", marginLeft: 10 },
-  stepsImage: { resizeMode: "contain", marginTop: 10, marginLeft: 20 },
-  icon: { width: 25, height: 25, position: "absolute", right: 15 },
+  stepsText: {
+    fontSize: baseUnit * 5,
+    fontWeight: "bold",
+    // marginLeft: 10,
+    marginLeft: windowWidth * 0.02,
+  },
+  stepsImage: {
+    // resizeMode: "contain",
+    // marginTop: 10,
+    // marginLeft: 20,
+    marginTop: windowHeight * 0.01,
+    marginLeft: windowWidth * 0.05,
+  },
+  icon: {
+    position: "absolute",
+    width: windowWidth * 0.07,
+    height: windowWidth * 0.07,
+    // width: 25,
+    // height: 25,
+    right: windowWidth * 0.02,
+  },
+  close: {
+    position: "absolute",
+    bottom: windowWidth * 0.05,
+    right: windowWidth * 0.05,
+  },
 });

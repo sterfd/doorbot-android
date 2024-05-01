@@ -13,8 +13,8 @@ import { InfoMenu } from "./infoMenu";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export function SettingsMenu({ toggleSettings }) {
-  const [token, setToken] = useState(null);
+export function SettingsMenu({ toggleSettings, token, setToken }) {
+  // const [token, setToken] = useState(null);
   const [pastedToken, setPastedToken] = useState(null);
   const [bannerText, setBannerText] = useState("");
   const [isBannerOpen, setIsBannerOpen] = useState(false);
@@ -62,6 +62,7 @@ export function SettingsMenu({ toggleSettings }) {
   const onPressSaveStorage = async (value) => {
     try {
       await AsyncStorage.setItem("token", pastedToken);
+      setToken(pastedToken);
       toggleSettings();
     } catch (e) {
       console.log(e);
@@ -144,7 +145,7 @@ export function SettingsMenu({ toggleSettings }) {
                     }}
                   >
                     <Image
-                      source={require("./ellipsis.png")}
+                      source={require("./images/ellipsis.png")}
                       style={styles.icon}
                     ></Image>
                   </TouchableOpacity>
@@ -161,7 +162,7 @@ export function SettingsMenu({ toggleSettings }) {
               <View style={styles.buttonContent}>
                 <View style={styles.rightView}>
                   <Image
-                    source={require("./add.png")}
+                    source={require("./images/add.png")}
                     style={styles.icon}
                   ></Image>
                   <Text style={styles.tokenText}>Add Token</Text>
@@ -173,7 +174,7 @@ export function SettingsMenu({ toggleSettings }) {
                     onPress={onPressInfo}
                   >
                     <Image
-                      source={require("./info.png")}
+                      source={require("./images/info.png")}
                       style={styles.icon}
                     ></Image>
                   </TouchableOpacity>

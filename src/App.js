@@ -8,12 +8,33 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import { SettingsMenu } from "./settingsMenu";
+import { sendRequest } from "./requests";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [bannerText, setBannerText] = useState("");
   const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    console.log("running useEffect in app.js");
+    const loadToken = async () => {
+      try {
+        const value = await AsyncStorage.getItem("token");
+        console.log("inside useeffect try, after await asyncstorage: ", value);
+        if (value !== null) {
+          console.log("got token on startup");
+          setToken(value);
+        } else {
+          toggleSettings();
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    loadToken();
+  }, []);
 
   useEffect(() => {
     if (isBannerOpen) {
@@ -25,28 +46,38 @@ export default function App() {
     }
   }, [isBannerOpen]);
 
-  const onPressDoorbotBuzz = () => {
+  const onPressDoorbotBuzz = async () => {
+    const { message } = await sendRequest("buzz_mobile", token);
     setIsBannerOpen(true);
-    setBannerText("Buzz button pressed");
+    setBannerText(message);
     console.log("buzz pressed");
   };
 
-  const onPressDoorbotElevator = () => {
+  const onPressDoorbotElevator = async () => {
+    const { message } = await sendRequest("unlock_mobile", token);
     setIsBannerOpen(true);
-    setBannerText("Elevator button pressed");
+    setBannerText(message);
     console.log("elevator pressed");
   };
 
-  const onPressCheckIn = () => {
+  const onPressCheckIn = async () => {
+    const { message } = await sendRequest("checkIn", token);
     setIsBannerOpen(true);
-    setBannerText("Checkin button pressed");
+    setBannerText(message);
     console.log("checkin pressed");
   };
 
-  const onPressDoorbotStatus = () => {
-    setIsBannerOpen(true);
-    setBannerText("Status button pressed");
-    console.log("status pressed");
+  const onPressDoorbotStatus = async () => {
+    try {
+      const { message } = await sendRequest("status_mobile", token);
+      setIsBannerOpen(true);
+      setBannerText(message);
+      console.log("status pressed");
+    } catch (e) {
+      console.error("Error: ", e);
+      setIsBannerOpen(true);
+      setBannerText("something went wrong", e);
+    }
   };
 
   const onPressMenu = () => {
@@ -100,7 +131,11 @@ export default function App() {
         visible={isSettingsOpen}
         onRequestClose={toggleSettings}
       >
-        <SettingsMenu toggleSettings={toggleSettings} />
+        <SettingsMenu
+          toggleSettings={toggleSettings}
+          token={token}
+          setToken={setToken}
+        />
       </Modal>
 
       <View style={styles.settings}>
@@ -123,7 +158,7 @@ const styles = StyleSheet.create({
     top: 50,
     height: 60,
     backgroundColor: "#73bdff",
-    width: "110%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },

@@ -13,8 +13,8 @@ import { InfoMenu } from "./infoMenu";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export function SettingsMenu({ toggleSettings }) {
-  const [token, setToken] = useState(null);
+export function SettingsMenu({ toggleSettings, token, setToken }) {
+  // const [token, setToken] = useState(null);
   const [pastedToken, setPastedToken] = useState(null);
   const [bannerText, setBannerText] = useState("");
   const [isBannerOpen, setIsBannerOpen] = useState(false);
@@ -62,6 +62,7 @@ export function SettingsMenu({ toggleSettings }) {
   const onPressSaveStorage = async (value) => {
     try {
       await AsyncStorage.setItem("token", pastedToken);
+      setToken(pastedToken);
       toggleSettings();
     } catch (e) {
       console.log(e);

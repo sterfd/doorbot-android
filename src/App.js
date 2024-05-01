@@ -18,9 +18,11 @@ export default function App() {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
+    console.log("running useEffect in app.js");
     const loadToken = async () => {
       try {
         const value = await AsyncStorage.getItem("token");
+        console.log("inside useeffect try, after await asyncstorage: ", value);
         if (value !== null) {
           console.log("got token on startup");
           setToken(value);
@@ -129,7 +131,11 @@ export default function App() {
         visible={isSettingsOpen}
         onRequestClose={toggleSettings}
       >
-        <SettingsMenu toggleSettings={toggleSettings} />
+        <SettingsMenu
+          toggleSettings={toggleSettings}
+          token={token}
+          setToken={setToken}
+        />
       </Modal>
 
       <View style={styles.settings}>

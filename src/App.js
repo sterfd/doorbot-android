@@ -23,7 +23,7 @@ export default function App() {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
-    // console.log("running useEffect in app.js");
+    // check to see if we have a token on start up
     const loadToken = async () => {
       try {
         const value = await AsyncStorage.getItem("token");
@@ -32,6 +32,7 @@ export default function App() {
           // console.log("got token on startup");
           setToken(value);
         } else {
+          // redirect and open settings since no token was found
           toggleSettings();
         }
       } catch (e) {
@@ -41,6 +42,7 @@ export default function App() {
     loadToken();
   }, []);
 
+  // timer to fade banner away
   useEffect(() => {
     if (isBannerOpen) {
       const timer = setTimeout(() => {
@@ -50,6 +52,7 @@ export default function App() {
     }
   }, [isBannerOpen]);
 
+  // 4 different doorbot functions, calling requests
   const onPressDoorbotBuzz = async () => {
     const { message } = await sendRequest("buzz_mobile", token);
     setIsBannerOpen(true);
@@ -78,6 +81,7 @@ export default function App() {
     console.log("status pressed");
   };
 
+  // change visibility of settings menu - passed into settings menu
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };

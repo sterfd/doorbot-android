@@ -24,14 +24,18 @@ export const sendRequest = async (endpoint, token) => {
             headers: headers,
           }
         );
+        const checkInData = await checkInResponse.text();
+
         if (checkInResponse.ok) {
-          const checkInData = await checkInResponse.text();
           console.log("Check in response data: ", checkInData);
           return { message: "Checked into the hub!" };
         } else {
           console.log("Failed to send request: ", checkInResponse.status);
-          throw new Error("Failed to send request");
+          return { message: "Couldn't check in!" };
+          // throw new Error("Failed to send request");
         }
+      } else {
+        return { message: "Authorization error" };
       }
     } else {
       let method = "POST";
@@ -43,18 +47,18 @@ export const sendRequest = async (endpoint, token) => {
         method: method,
         headers: headers,
       });
+      const data = await response.text();
 
       if (response.ok) {
-        const data = await response.text();
         console.log("Response data: ", data);
-        return { message: data };
       } else {
         console.log("Failed to send request: ", response.status);
-        throw new Error("Failed to send request");
       }
+      return { message: data };
     }
   } catch (e) {
-    console.error("Eorr sending post", e);
-    throw e;
+    console.error("Error sending request: ", e);
+    return { message: "Error sending requests" };
+    // throw e;
   }
 };

@@ -5,11 +5,16 @@ import {
   Button,
   Modal,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { SettingsMenu } from "./settingsMenu";
 import { sendRequest } from "./requests";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+const baseUnit = Math.round(windowWidth / 100);
 
 export default function App() {
   const [bannerText, setBannerText] = useState("");
@@ -18,73 +23,57 @@ export default function App() {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
-    console.log("running useEffect in app.js");
+    // check to see if we have a token on start up
     const loadToken = async () => {
       try {
         const value = await AsyncStorage.getItem("token");
-        console.log("inside useeffect try, after await asyncstorage: ", value);
         if (value !== null) {
-          console.log("got token on startup");
           setToken(value);
         } else {
+          // redirect and open settings since no token was found
           toggleSettings();
         }
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
     };
     loadToken();
   }, []);
 
+  // timer to fade banner away
   useEffect(() => {
     if (isBannerOpen) {
       const timer = setTimeout(() => {
         setIsBannerOpen(false);
       }, 1000);
-
       return () => clearTimeout(timer);
     }
   }, [isBannerOpen]);
 
+  // 4 different doorbot functions, calling requests
   const onPressDoorbotBuzz = async () => {
     const { message } = await sendRequest("buzz_mobile", token);
     setIsBannerOpen(true);
     setBannerText(message);
-    console.log("buzz pressed");
   };
 
   const onPressDoorbotElevator = async () => {
     const { message } = await sendRequest("unlock_mobile", token);
     setIsBannerOpen(true);
     setBannerText(message);
-    console.log("elevator pressed");
   };
 
   const onPressCheckIn = async () => {
     const { message } = await sendRequest("checkIn", token);
     setIsBannerOpen(true);
     setBannerText(message);
-    console.log("checkin pressed");
   };
 
   const onPressDoorbotStatus = async () => {
-    try {
-      const { message } = await sendRequest("status_mobile", token);
-      setIsBannerOpen(true);
-      setBannerText(message);
-      console.log("status pressed");
-    } catch (e) {
-      console.error("Error: ", e);
-      setIsBannerOpen(true);
-      setBannerText("something went wrong", e);
-    }
+    const { message } = await sendRequest("status_mobile", token);
+    setIsBannerOpen(true);
+    setBannerText(message);
   };
 
-  const onPressMenu = () => {
-    console.log("menu pressed");
-    toggleSettings();
-  };
-
+  // change visibility of settings menu - passed into settings menu
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
@@ -98,7 +87,11 @@ export default function App() {
       </Modal>
 
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: "#529ce6" }]}
+        style={{
+          ...styles.button,
+          backgroundColor: "#529ce6",
+          marginTop: windowHeight * 0.05,
+        }}
         onPress={onPressDoorbotBuzz}
       >
         <Text style={styles.buttonText}>BUZZ</Text>
@@ -139,7 +132,7 @@ export default function App() {
       </Modal>
 
       <View style={styles.settings}>
-        <Button title="OPEN MENU" onPress={onPressMenu} />
+        <Button title="OPEN SETTINGS" onPress={toggleSettings} />
       </View>
     </View>
   );
@@ -148,43 +141,41 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
   banner: {
-    position: "absolute",
-    top: 50,
-    height: 60,
     backgroundColor: "#73bdff",
+    marginTop: windowHeight * 0.05,
+    height: windowHeight * 0.08,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   bannerText: {
     color: "white",
-    fontSize: 20,
+    fontWeight: "bold",
+    fontSize: baseUnit * 6,
   },
   button: {
-    height: 120,
-    width: 250,
     backgroundColor: "lavender",
-    marginTop: 15,
-    marginBottom: 15,
+    height: windowHeight * 0.13,
+    width: windowWidth * 0.65,
+    marginVertical: windowHeight * 0.025,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   buttonText: {
     color: "white",
-    fontSize: 28,
+    fontSize: baseUnit * 7,
     fontWeight: "bold",
     textAlign: "center",
   },
   settings: {
     position: "absolute",
-    right: 25,
-    bottom: 25,
+    bottom: windowWidth * 0.05,
+    right: windowWidth * 0.05,
   },
 });

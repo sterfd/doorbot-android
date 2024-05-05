@@ -14,7 +14,6 @@ import { useState } from "react";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const baseUnit = Math.round(windowWidth / 100);
-// const imageWidth = windowWidth - 50;
 const imageWidth = windowWidth * 0.9;
 const aspectRatio = windowHeight / windowWidth;
 

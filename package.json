@@ -12,7 +12,6 @@
     "@react-native-async-storage/async-storage": "1.21.0",
     "expo": "~50.0.14",
     "expo-clipboard": "~5.0.1",
-    "expo-status-bar": "~1.11.1",
     "expo-web-browser": "~12.8.2",
     "install": "^0.13.0",
     "npm": "^10.6.0",

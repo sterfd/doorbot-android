@@ -8,8 +8,8 @@ import {
   Dimensions,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { SettingsMenu } from "./settingsMenu";
-import { sendRequest } from "./requests";
+import { SettingsMenu } from "./src/settingsMenu";
+import { sendRequest } from "./src/requests";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const windowWidth = Dimensions.get("window").width;

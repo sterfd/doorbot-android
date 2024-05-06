@@ -107,8 +107,6 @@ const styles = StyleSheet.create({
   item: {
     padding: windowHeight * 0.011,
     marginVertical: windowHeight * 0.011,
-    // padding: 10,
-    // marginVertical: 10,
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 10,
@@ -116,13 +114,9 @@ const styles = StyleSheet.create({
   stepsText: {
     fontSize: baseUnit * 5,
     fontWeight: "bold",
-    // marginLeft: 10,
     marginLeft: windowWidth * 0.02,
   },
   stepsImage: {
-    // resizeMode: "contain",
-    // marginTop: 10,
-    // marginLeft: 20,
     marginTop: windowHeight * 0.01,
     marginLeft: windowWidth * 0.05,
   },
@@ -130,8 +124,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: windowWidth * 0.07,
     height: windowWidth * 0.07,
-    // width: 25,
-    // height: 25,
     right: windowWidth * 0.02,
   },
   close: {

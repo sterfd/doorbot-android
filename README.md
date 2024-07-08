@@ -4,8 +4,14 @@
 The Doorbot Mobile App aims to simplify the experience of getting into the RC hub without a keyfob. The original [RC Doorbot](https://doorbot.recurse.com) is a web page that allows Recursers to access the physical RC space using their RC credentials. The doorbot can buzz the user into the lobby and call the elevators up to the 4th floor. Once in the space, checking into the hub requires the visitor to go to the tablet at the entryway, search for their name in the RC directory, and check in their profile. With the mobile app, unlocking the front door, calling the elevator, and checking into the hub are just a tap away. 
 
 ## Built With
+#### App: 
 * [![React Native][ReactNative]][ReactNative-url]
 * [![Expo][Expo]][Expo-url]
+
+#### Doorbot Server:
+* [![Python][Python]][Python-url]
+* [![Flask][Flask]][Flask-url]
+
 
 ## Features
 ### Personal Access Tokens
@@ -26,3 +32,8 @@ Download and install the .apk file from the latest [release](https://github.com/
 [ReactNative-url]: https://reactnative.dev
 [Expo]: https://img.shields.io/badge/expo-1C1E24?style=for-the-badge&logo=expo&logoColor=#D04A37
 [Expo-url]: https://expo.dev
+[Flask]: https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white
+[Flask-url]: https://flask.palletsprojects.com/en/3.0.x/
+[Python]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
+[Python-url]: https://www.python.org
+

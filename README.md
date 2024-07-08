@@ -13,7 +13,7 @@ Since the mobile app uses personal access tokens for authentication instead of O
 
 ## Getting Started
 ### Installation
-Download and install the .apk file from the latest [release]((https://github.com/sterfd/doorbot-android/releases/download/v1.0.0/doorbot-android-install.apk)).
+Download and install the .apk file from the latest [release](https://github.com/sterfd/doorbot-android/releases/download/v1.0.0/doorbot-android-install.apk).
 
 ### Usage
 1. **Set Up** - Upon first loading the app, you'll be presented with a set up page where you can add your personal access token. Press the info button to the right of `Add Token` to see the step by step instructions. Pressing `Add Token` will bring your to your RC settings page, where after logging in, you can create a new personal access token. Copy it to your clipboard and close the browser. Paste and save the token. 

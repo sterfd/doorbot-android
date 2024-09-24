@@ -30,7 +30,7 @@ Download and install the .apk file from the latest [release](https://github.com/
 
 The Doorbot Widget is a series of iOS shortcuts that allows you to call the [Doorbot](https://doorbot.recurse.com/) commands from your home screen instead of the browser. This uses personal access tokens instead of OAuth, so once the shortcuts are set up, you won't have to re-authenticate. 
 
-![Widget gif](https://raw.githubusercontent.com/sterfd/doorbot-android/main/assets/widget-homepage.gif)
+![Widget gif](https://raw.githubusercontent.com/sterfd/doorbot-android/master/assets/widget-homepage.gif)
 
 ### How to use it
 You can activate Doorbot Buzz or Doorbot Elevator by pressing on the shortcut in the Shortcuts app. If you've put the shortcut widgets on your home screen, you can activate those calls by pressing on the widget. Doorbot Buzz answers the building intercom so you have access to the lobby of 397 Bridge St. Doorbot Elevator activates the robot that presses the elevator down button on the 4th floor. Doorbot Status will tell you if Doorbot is down or active. Hub Check In will check you into the hub - Doorbot Elevator will prompt you if you would like to check in, and this shortcut must be installed for that to go through.
@@ -64,3 +64,4 @@ Instructions on how to use the doorbot commands properly are documented [here](h
 [Flask-url]: https://flask.palletsprojects.com/en/3.0.x/
 [Python]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
 [Python-url]: https://www.python.org
+
